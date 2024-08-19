@@ -59,9 +59,32 @@ def get_data_in_json(urls, key):
             if sen == get_time_in_sen():
                 print(f'现在是第{i + 1}次获取数据')
                 numbers_current = query_the_online_people_number(urls)
+                with open('data4.json', 'r') as f:
+                    numbers=json.load(f)
                 numbers.append(numbers_current)
+                with open('data4.json','w') as f:
+                    json.dump(numbers,f)
                 i += 1
             else:
                 time.sleep(1)
-        with open('data4.json', 'w') as f:
-            json.dump(numbers, f)
+
+    elif key==5:
+        numbers_current=[]
+        with open('data5.json','w') as f:
+            json.dump(numbers_current,f)
+        while True:
+            print('注意，此时只能通过中断程序来中断数据获取，（中断后数据仍会保留，但是下次调用此模式数据会覆盖）')
+            if sen == get_time_in_sen():
+                print(f'现在是第{i + 1}次获取数据')
+                numbers_current = query_the_online_people_number(urls)
+                with open('data5.json', 'r') as f:
+                    numbers=json.load(f)
+                numbers.append(numbers_current)
+                with open('data5.json','w') as f:
+                    json.dump(numbers,f)
+                i += 1
+            else:
+                time.sleep(1)
+
+    else:
+        print('无效输入，请重新输入')

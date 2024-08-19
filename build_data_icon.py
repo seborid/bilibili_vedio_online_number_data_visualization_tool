@@ -57,7 +57,7 @@ def build_icon(titles, key):
             elif choice == '2':
                 x = []
                 for number in number_data:#重写x轴，因为一些历史遗留问题，这里支持时间为int和str两种格式，历史遗留问题解决后可以只保存str格式
-                    if type(number[0]) == int:
+                    if type(number[0]) == type(1):
                         x.append(f'2024-{number[0]:02d}-{number[1]:02d} {number[2]:02d}:{number[3]:02d}')
                     else:
                         x.append(f'2024-{number[0]}-{number[1]} {number[2]}:{number[3]}')
@@ -76,7 +76,7 @@ def build_icon(titles, key):
                         )
                     )
                     xaxis = dict(type='date')
-                    if type(number[0][0]) == int:
+                    if type(number_data[0][0])==type(1):
                         fig.write_html(
                             f'data_of_{i}_in_{number_data[0][0]:02d}{number_data[0][1]:02d}_with_{key}form.html')
                     else:

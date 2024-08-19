@@ -1,5 +1,6 @@
 import json
 import re
+import sys
 import time
 import warnings
 
@@ -12,14 +13,16 @@ def find_word_and_output_numbers(html_bilibili):
     # 使用正则表达式查找<pre>标签中的JSON字符串
     json_str = re.search(r'<pre>(.*?)</pre>', html_bilibili, re.DOTALL).group(1)
     json_data = json.loads(json_str)
+    print(json_data)
     # 现在您可以在Python中处理json_data了
     number = json_data['data']['total']
-    print(number)
     number = str(number)
     number = number.rstrip('+')
     if '万' in number:
         number = number.rstrip('万')
         number = int(float(number) * 10000)
+    elif number == '-':
+        number = 0
     else:
         number = int(number)
     return number
@@ -44,7 +47,27 @@ def query_the_online_people_number(urls):
         warnings.simplefilter('ignore', ResourceWarning)
         chrome_options = Options()
         chrome_options.add_argument('--headless')
-        driver = webdriver.Chrome(options=chrome_options)
+        path = r'D:\geren\demo\pydemo\learn\chromedriver.exe'
+        service = webdriver.ChromeService(executable_path=path)
+        i = 0
+        error_information = None
+        while i < 5:
+            try:
+                driver = webdriver.Chrome(service=service, options=chrome_options)
+                if i == 0:
+                    break
+                elif 0 < i and i < 5:
+                    print('重试成功')
+                    break
+            except Exception as e:
+                print(f"selenium初始化错误,错误信息为{str(e)},进行第{i + 1}次重试")
+                error_information = e
+                i = i + 1
+                time.sleep(i * 5)
+        if i == 5:
+            print(f'\nselenium重新启动失败\n错误信息为{str(error_information)}')
+            sys.exit()
+
         driver.get(url)
         html_bilibili = driver.page_source
         driver.close()
@@ -59,5 +82,5 @@ def query_the_online_people_number(urls):
     day = local_time.tm_mday
     sec2 = local_time.tm_sec
     print(f'现在时间是2024年{month}月{day}日{hour}时{minute}分{sec2}秒')
-    print(f'获取数据用时{((sec2 - sec1) + 60) % 60}秒')
+    print(f'获取数据用时{((sec2 - sec1) + 60) % 60}秒\n')
     return numbers
